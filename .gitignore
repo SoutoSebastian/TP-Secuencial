@@ -1,0 +1,12 @@
+# --- Salidas propias de este proyecto (seq02.exe / power.R) ---
+*.OUT
+*.out
+ 
+# --- Historial y estado de sesion de R ---
+.Rhistory
+.RData
+.Rapp.history
+ 
+# --- Archivos temporales de RStudio ---
+.Rproj.user/
+*.Rproj
