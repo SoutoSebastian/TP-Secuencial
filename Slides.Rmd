@@ -1,0 +1,110 @@
+---
+title: "Implementación de Programas en R"
+author: "Sebastian Souto, Santiago Chiquinho, Franco Caetano"
+date: "`r Sys.Date()`"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+---
+
+## Objetivo del trabajo
+
+En este trabajo implementamos diferentes programas utilizados en el libro
+
+**Sequential Methods and their Applications**  
+*Nitis Mukhopadhyay y Basil M. de Silva*
+
+---
+
+## Programa 1 — Power
+
+**Capítulo 2 · Sección 2.5**
+
+### Objetivo
+
+Dado el test de Neyman-Pearson, donde se contrastan hipótesis simples sobre la media de una población
+$N(\mu,\sigma^2)$ con $\sigma$ conocido.
+
+El programa **Power** permite calcular:
+
+- **(a)** La probabilidad de error de tipo II, $\beta$, dado un tamaño muestral $n$.
+- **(b)** El tamaño muestral $n$ necesario para alcanzar un valor objetivo de $\beta$.
+
+---
+
+## Fundamento teórico
+
+### Regla de decisión
+
+Rechazar $H_0$ si
+
+$$
+\bar{x}>\mu_0+z_{1-\alpha}\frac{\sigma}{\sqrt n}
+$$
+
+### Fórmulas clave
+
+**Error de tipo II**
+
+$$
+\beta(n)=
+\Phi\left(
+z_{\alpha}
+-
+\frac{|\mu_1-\mu_0|\sqrt n}{\sigma}
+\right)
+$$
+
+**Tamaño muestral**
+
+$$
+n=
+\left\lceil
+\left(
+\frac{\sigma(z_{\alpha}-z_{\beta})}
+{|\mu_1-\mu_0|}
+\right)^2
+\right\rceil
+$$
+
+Para $n$ se toma el entero superior.
+
+---
+
+## Inputs del programa
+
+### Parámetros
+
+- $\mu_0$: media bajo $H_0$
+- $\mu_1$: media bajo $H_1$ ($\mu_0<\mu_1$)
+- $\sigma$: desvío estándar poblacional ($>0$)
+- $\alpha$: nivel de significación ($0<\alpha<1$)
+
+### Según la opción elegida
+
+1. $n$: tamaño de muestra para calcular $\beta$.
+2. $\beta$: error de tipo II deseado para calcular $n$.
+
+### Opciones de menú
+
+1. Un único cálculo de $\beta$ o $n$.
+2. $\beta$ para un conjunto de valores de $n$.
+3. $n$ para un conjunto de valores de $\beta$.
+
+---
+
+## Programa 4 - SPRT
+
+**Cap 3, Sección 3.2**
+
+### Objetivo
+
+- Realizar un test secuencial de hipótesis simples sobre un parámetro $\theta$.
+
+- Aplicable a 9 familias de distribuciones: Normal, Gamma, Weibull, Erlang, Exponencial, Poisson, Bernoulli, Geométrica y Binomial Negativa.
+
+- Permite truncar el muestreo en $n = K$ (versión truncada del SPRT, fórmula 3.2.7)
