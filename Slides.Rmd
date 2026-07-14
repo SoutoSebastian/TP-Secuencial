@@ -20,9 +20,8 @@ En este trabajo implementamos diferentes programas utilizados en el libro
 
 ---
 
-## Programa 1 — Power
+## Programa 1 — Power (Cap 2, Sección 2.5)
 
-**Capítulo 2 · Sección 2.5**
 
 ### Objetivo
 
@@ -97,9 +96,8 @@ Para $n$ se toma el entero superior.
 
 ---
 
-## Programa 4 - SPRT
+## Programa 4 - SPRT (Cap 3, Sección 3.2)
 
-**Cap 3, Sección 3.2**
 
 ### Objetivo
 
@@ -108,3 +106,52 @@ Para $n$ se toma el entero superior.
 - Aplicable a 9 familias de distribuciones: Normal, Gamma, Weibull, Erlang, Exponencial, Poisson, Bernoulli, Geométrica y Binomial Negativa.
 
 - Permite truncar el muestreo en $n = K$ (versión truncada del SPRT, fórmula 3.2.7)
+
+---
+
+## Fundamento Teórico
+
+- Estadístico acumulado: 
+
+$$
+Z_n=\sum_{i=1}^{n}\log\left(\frac{f_1(x_i)}{f_0(x_i)}\right)
+$$
+
+- Regla de decisión:
+
+  1. $Zn \leq a$ se acepta $H0$
+  2. $Zn \geq b$ se rechaza $H0$
+  3. En otro caso, se sigue observando
+
+
+- Límites de Wald:
+
+$$
+a=\log\left(\frac{\beta}{1-\alpha}\right)
+\qquad\rightarrow\qquad
+\text{límite inferior}
+$$
+
+$$
+b=\log\left(\frac{1-\beta}{\alpha}\right)
+\qquad\rightarrow\qquad
+\text{límite superior}
+$$
+
+---
+
+## Inputs del programa
+
+- ID de la distribución (1 al 9)
+
+- $\theta_0, \theta_1$: valores de la hipótesis nula y alternativa.
+
+- $\alpha, \beta$: errores de tipo I y tipo II
+
+- Parametro conocido (según distribución)
+
+- Truncamiento opcional K (Y/N)
+
+- Modo de datos:
+  1. Simulación: número de réplicas, semilla, valor verdadero $\theta$
+  2. Datos reales: uno o varios conjuntos de datos ingresados por el usuario.
