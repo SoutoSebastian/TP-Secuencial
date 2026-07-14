@@ -57,8 +57,12 @@ run_sprt <- function(loglr_inc, a, b, K = NULL) {
     if (Z <= a) return(list(n = n, decision = "H0", Z = Z, truncated = FALSE))
   }
   # Se llego a K sin cruzar ningun limite -> decision por truncamiento.
-  # Regla clasica de Wald: se acepta H1 si Z >= 0, H0 si Z < 0.
-  decision <- if (Z >= 0) "H1" else "H0"
+  
+  
+  B <- exp(a)
+  A <- exp(b)
+  limite <- log((A+B)/2)
+  decision <- if (Z > limite) "H1" else "H0"
   list(n = n_max, decision = decision, Z = Z, truncated = TRUE)
 }
 
