@@ -94,9 +94,146 @@ Para $n$ se toma el entero superior.
 2. $\beta$ para un conjunto de valores de $n$.
 3. $n$ para un conjunto de valores de $\beta$.
 
+
 ---
 
-## Programa 4 - SPRT (Cap 3, Sección 3.2)
+## Programa 2 - ProbKn (Cap 2, Sección 2.5)
+
+
+### Objetivo
+
+- Analizar la longitud aleatoria de un intervalo de confianza para la media de una población Normal.
+
+- Se considera una población:
+
+$$
+X_1,\ldots,X_n \overset{iid}{\sim} N(\mu,\sigma^2)
+$$
+
+donde tanto $\mu$ como $\sigma^2$ son desconocidos.
+
+- El programa calcula la probabilidad:
+
+$$
+P(K_n>c\sigma)
+$$
+
+donde $K_n$ es la longitud del intervalo de confianza y $c>0$ es un valor de referencia.
+
+---
+
+## Fundamento Teórico
+
+### Intervalo de confianza para $\mu$
+
+El intervalo de confianza usual de nivel $1-\alpha$ es:
+
+$$
+J_n=
+\left[
+\bar{X}_n
+\pm
+a_{n-1}\frac{S_n}{\sqrt{n}}
+\right]
+$$
+
+donde:
+
+- $\bar{X}_n$ es la media muestral.
+- $S_n$ es el desvío estándar muestral.
+- $a_{n-1}$ es el cuantil superior correspondiente de una distribución $t$ de Student con $n-1$ grados de libertad.
+
+---
+
+## Longitud del intervalo
+
+La longitud aleatoria del intervalo es:
+
+$$
+K_n=
+2a_{n-1}\frac{S_n}{\sqrt{n}}
+$$
+
+Como $S_n$ depende de la muestra observada, $K_n$ también es una variable aleatoria.
+
+El programa permite estudiar la probabilidad de que esta longitud supere el valor $c\sigma$:
+
+$$
+P(K_n>c\sigma)
+$$
+
+---
+
+## Cálculo de la probabilidad
+
+Utilizando que:
+
+$$
+\frac{(n-1)S_n^2}{\sigma^2}
+\sim
+\chi^2_{n-1}
+$$
+
+se obtiene:
+
+$$
+P(K_n>c\sigma)
+=
+P\left(
+\chi^2_{n-1}
+>
+\frac{n(n-1)c^2}
+{4a_{n-1}^2}
+\right)
+$$
+
+La probabilidad depende de:
+
+- $\alpha$
+- $n$
+- $c$
+
+No depende del valor particular de $\sigma$.
+
+---
+
+## Inputs y outputs del programa
+
+### Inputs
+
+- $\alpha$: nivel de significación, con $0<\alpha<1$.
+
+- $n$: tamaño de muestra, con $n\geq2$.
+
+- Valores de $c$ para los que se desea calcular:
+
+$$
+P(K_n>c\sigma)
+$$
+
+### Ejemplo del libro
+
+- $\alpha=0.05$
+
+- $n=20$
+
+- Valores de $c$ entre $0.44$ y $1.48$, con incrementos de $0.04$.
+
+### Outputs
+
+- Tabla con las columnas:
+
+$$
+c
+\qquad
+p=P(K_n>c\sigma)
+$$
+
+- Archivo de salida opcional `SEQ02.OUT`.
+
+---
+
+## Programa 3 - SPRT (Cap 3, Sección 3.2)
 
 
 ### Objetivo
@@ -155,3 +292,117 @@ $$
 - Modo de datos:
   1. Simulación: número de réplicas, semilla, valor verdadero $\theta$
   2. Datos reales: uno o varios conjuntos de datos ingresados por el usuario.
+  
+---
+
+## Programa 4 - OC (Cap 3, Secciones 3.3 y 3.4)
+
+
+### Objetivo
+
+- Analizar el comportamiento del SPRT para diferentes valores verdaderos del parámetro $\theta$.
+
+- Calcular la **función característica operativa (OC)**:
+
+$$
+L(\theta)=P_{\theta}(\text{aceptar }H_0)
+$$
+
+- Calcular la **función de número muestral promedio (ASN)**:
+
+$$
+E_{\theta}(N)
+$$
+
+- Aplicable a las mismas 9 familias de distribuciones utilizadas por el programa SPRT.
+
+---
+
+## Fundamento Teórico
+
+- Incremento del log-cociente de verosimilitud:
+
+$$
+Z_i=
+\log\left(
+\frac{f(X_i\mid\theta_1)}
+{f(X_i\mid\theta_0)}
+\right)
+$$
+
+- Para cada valor verdadero de $\theta$, se obtiene $t_0$ de manera que:
+
+$$
+E_{\theta}\left(e^{t_0Z_1}\right)=1
+$$
+
+- Límites logarítmicos de Wald:
+
+$$
+a=\log\left(\frac{1-\beta}{\alpha}\right)
+\qquad
+b=\log\left(\frac{\beta}{1-\alpha}\right)
+$$
+
+---
+
+## Funciones OC y ASN
+
+### Función OC
+
+$$
+L(\theta)\approx
+\begin{cases}
+\dfrac{e^{t_0a}-1}
+{e^{t_0a}-e^{t_0b}},
+& t_0\neq 0 \\[10pt]
+\dfrac{a}{a-b},
+& t_0=0
+\end{cases}
+$$
+
+### Función ASN
+
+$$
+E_{\theta}(N)\approx
+\begin{cases}
+\dfrac{bL(\theta)+a[1-L(\theta)]}
+{E_{\theta}(Z_1)},
+& E_{\theta}(Z_1)\neq 0 \\[10pt]
+\dfrac{-ab}{E_{\theta}(Z_1^2)},
+& E_{\theta}(Z_1)=0
+\end{cases}
+$$
+
+---
+
+## Inputs y outputs del programa
+
+### Inputs
+
+- ID de la distribución (1 al 9)
+
+- $\theta_0, \theta_1$: valores de la hipótesis nula y alternativa.
+
+- $\alpha, \beta$: errores nominales de tipo I y tipo II.
+
+- Parámetro conocido, según la distribución.
+
+### Funcionamiento
+
+- El programa recorre una grilla de valores de $t_0$.
+
+- Por defecto se utilizan valores entre $-2.2$ y $2.2$, con incrementos de $0.1$.
+
+### Outputs
+
+- Tabla con las columnas: $t_0$, $\theta$, OC y ASN.
+
+- Gráfico de la función OC.
+
+- Gráfico de la función ASN.
+
+- Archivo de salida opcional `SEQ03.OUT`.
+
+---
+
