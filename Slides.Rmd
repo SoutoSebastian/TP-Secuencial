@@ -380,3 +380,197 @@ $$
 
 ---
 
+## Programa 5 - Stein Two-Stage (Cap 6, Sección 6.2)
+
+
+### Objetivo
+
+- Construir un intervalo de confianza de longitud fija $2d$ para la media $\mu$ de una población Normal.
+
+- Se considera:
+
+$$
+X_1,X_2,\ldots \overset{iid}{\sim} N(\mu,\sigma^2)
+$$
+
+donde $\mu$ y $\sigma^2$ son desconocidos.
+
+- El procedimiento utiliza una muestra piloto para estimar la variabilidad y determinar el tamaño muestral total $N$.
+
+---
+
+## Fundamento Teórico
+
+Se desea construir un intervalo de confianza de la forma:
+
+$$
+J_N=
+\left[
+\bar{X}_N-d,\,
+\bar{X}_N+d
+\right]
+$$
+
+cuya longitud es fija:
+
+$$
+2d
+$$
+
+y con nivel de confianza $1-\alpha$.
+
+El problema es que el tamaño muestral necesario depende de $\sigma^2$, que es desconocida.
+
+Por este motivo se utiliza un procedimiento de muestreo en dos etapas.
+
+---
+
+## Procedimiento de Stein
+
+### Primera etapa
+
+- Se toma una muestra piloto de tamaño $m$:
+
+$$
+X_1,\ldots,X_m
+$$
+
+- Se calcula la varianza muestral:
+
+$$
+S_m^2=
+\frac{1}{m-1}
+\sum_{i=1}^{m}
+(X_i-\bar{X}_m)^2
+$$
+
+- También se obtiene el cuantil de Student:
+
+$$
+a_{m-1}
+=
+t_{m-1,\,1-\alpha/2}
+$$
+
+---
+
+## Tamaño muestral total
+
+A partir de la variabilidad observada en la muestra piloto se calcula:
+
+$$
+N=
+\max
+\left\{
+m,\,
+\left\lfloor
+\frac{a_{m-1}^2S_m^2}{d^2}
+\right\rfloor+1
+\right\}
+$$
+
+Por lo tanto:
+
+- Mayor $S_m^2$ implica un mayor tamaño muestral $N$.
+- Un valor menor de $d$ requiere un mayor $N$.
+- $N$ depende de los datos observados en la primera etapa.
+
+---
+
+## Segunda etapa
+
+Si $N>m$, se toman:
+
+$$
+N-m
+$$
+
+observaciones adicionales.
+
+Se combinan las observaciones de ambas etapas y se calcula:
+
+$$
+\bar{X}_N=
+\frac{1}{N}
+\sum_{i=1}^{N}X_i
+$$
+
+Finalmente se construye el intervalo:
+
+$$
+J_N=
+\left[
+\bar{X}_N-d,\,
+\bar{X}_N+d
+\right]
+$$
+
+---
+
+## Inputs del programa
+
+- $\alpha$: nivel de significación, con $0<\alpha<1$.
+
+- $d$: semiancho del intervalo de confianza.
+
+- $m$: tamaño de la muestra piloto.
+
+- $\mu$: media de la distribución Normal utilizada en la simulación.
+
+- $\sigma^2$: varianza de la distribución Normal utilizada en la simulación.
+
+- Número de repeticiones de la simulación.
+
+---
+
+## Funcionamiento de la simulación
+
+En cada repetición el programa:
+
+1. Genera una muestra piloto de tamaño $m$.
+
+2. Calcula $S_m^2$ y determina el tamaño total $N$.
+
+3. Genera las $N-m$ observaciones adicionales, si son necesarias.
+
+4. Construye el intervalo de longitud fija $2d$.
+
+5. Verifica si el intervalo contiene al verdadero valor de $\mu$.
+
+Al finalizar se calculan:
+
+- Tamaño muestral promedio.
+
+- Desviación estándar de $N$.
+
+- Tamaño muestral mínimo y máximo.
+
+- Cobertura estimada del procedimiento.
+
+---
+
+## Ejemplo
+
+Para:
+
+$$
+\alpha=0.10,\qquad d=0.5,\qquad m=10
+$$
+
+y datos simulados de:
+
+$$
+N(5,4)
+$$
+
+con 2000 repeticiones, se espera obtener aproximadamente:
+
+$$
+E(N)\approx54
+$$
+
+y una cobertura cercana a:
+
+$$
+0.90
+$$
