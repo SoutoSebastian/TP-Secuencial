@@ -197,8 +197,6 @@ No depende del valor particular de $\sigma$.
 
 ---
 
-## Inputs y outputs del programa
-
 ### Inputs
 
 - $\alpha$: nivel de significación, con $0<\alpha<1$.
@@ -218,18 +216,6 @@ $$
 - $n=20$
 
 - Valores de $c$ entre $0.44$ y $1.48$, con incrementos de $0.04$.
-
-### Outputs
-
-- Tabla con las columnas:
-
-$$
-c
-\qquad
-p=P(K_n>c\sigma)
-$$
-
-- Archivo de salida opcional `SEQ02.OUT`.
 
 ---
 
@@ -376,9 +362,7 @@ $$
 
 ---
 
-## Inputs y outputs del programa
-
-### Inputs
+## Inputs 
 
 - ID de la distribución (1 al 9)
 
@@ -393,16 +377,6 @@ $$
 - El programa recorre una grilla de valores de $t_0$.
 
 - Por defecto se utilizan valores entre $-2.2$ y $2.2$, con incrementos de $0.1$.
-
-### Outputs
-
-- Tabla con las columnas: $t_0$, $\theta$, OC y ASN.
-
-- Gráfico de la función OC.
-
-- Gráfico de la función ASN.
-
-- Archivo de salida opcional `SEQ03.OUT`.
 
 ---
 
