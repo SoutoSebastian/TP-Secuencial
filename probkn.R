@@ -1,10 +1,6 @@
 # ============================================================================
 # PROGRAMA: ProbKn
 # ----------------------------------------------------------------------------
-# Basado en el programa "ProbKn" incluido en seq02.exe, del libro
-# "Sequential Methods and Their Applications" de Nitis Mukhopadhyay
-# y Basil M. de Silva (Capitulo 2, Seccion 2.5, Figuras 2.5.3 y 2.5.4).
-#
 # OBJETIVO
 #   Calcular la probabilidad
 #
@@ -41,14 +37,6 @@
 #
 #   Por lo tanto, esta probabilidad depende de alpha, n y c, pero NO del
 #   valor de sigma.
-#
-# VALIDACION CON EL EJEMPLO DEL LIBRO (Figura 2.5.3)
-#   alpha = 0.05, n = 20 y c = 0.44, 0.48, ..., 1.48.
-#   El programa reproduce la tabla publicada en el libro; por ejemplo:
-#
-#       c = 0.80  ->  p = 0.791
-#       c = 1.00  ->  p = 0.300
-#       c = 1.16  ->  p = 0.063
 # ============================================================================
 
 
@@ -75,6 +63,8 @@ print_banner <- function() {
 #'
 #' @return un data.frame con c, el punto critico t, el umbral chi-cuadrado
 #'         y la probabilidad p = P(Kn > c*sigma)
+
+#ya se definieron alpha, n, y c
 prob_kn <- function(alpha, n, c) {
   if (length(alpha) != 1 || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("alpha debe ser un unico valor en (0,1)")
@@ -84,42 +74,39 @@ prob_kn <- function(alpha, n, c) {
   }
   if (length(c) < 1 || any(!is.finite(c)) || any(c <= 0)) {
     stop("c debe contener uno o mas valores positivos")
-  }
+  } #se chequea que los valores dados sean válidos
 
   n <- as.integer(n)
-  a_n_minus_1 <- qt(1 - alpha / 2, df = n - 1)
-  chi_threshold <- n * (n - 1) * c^2 / (4 * a_n_minus_1^2)
-  p <- pchisq(chi_threshold, df = n - 1, lower.tail = FALSE)
+  
+  a_n_minus_1 <- qt(1 - alpha / 2, df = n - 1) #cálculo del cuantil a_n-1
+  
+  chi_threshold <- n * (n - 1) * c^2 / (4 * a_n_minus_1^2) #definimos el umbral
+  
+  p <- pchisq(chi_threshold, df = n - 1, lower.tail = FALSE) #calculamos la probabilidad 
+                                                             #de la cola derecha 
+                                                             #que equivale a P(Kn>c*sigma)
 
   data.frame(
     c = as.numeric(c),
     a_n_minus_1 = rep(a_n_minus_1, length(c)),
     chi_threshold = as.numeric(chi_threshold),
     p = as.numeric(p)
-  )
+  )#dataframe final 
 }
 
 
 #' Genera la tabla de ProbKn para un conjunto de valores de c
-#'
-#' Por defecto utiliza exactamente la grilla de la Figura 2.5.3:
-#' c = 0.44, 0.48, ..., 1.48.
-#'
 #' @param alpha    nivel de significacion
 #' @param n        tamaño de muestra
 #' @param c_values valores de c a evaluar
 #'
 #' @return data.frame devuelto por prob_kn()
 prob_kn_table <- function(alpha, n, c_values = seq(0.44, 1.48, by = 0.04)) {
-  # round evita pequeñas imprecisiones de representacion de seq()
   c_values <- round(c_values, 10)
   prob_kn(alpha = alpha, n = n, c = c_values)
 }
 
 
-#' Da formato a decimales como en la salida del libro
-#'
-#' Ejemplos: 0.44 -> ".44"; 0.050 -> ".050"; 1 -> "1.000".
 format_book_decimal <- function(x, digits) {
   texto <- sprintf(paste0("%.", digits, "f"), x)
   texto <- sub("^0\\.", ".", texto)
@@ -127,13 +114,6 @@ format_book_decimal <- function(x, digits) {
   texto
 }
 
-
-#' Convierte los resultados en las lineas de la tabla del libro
-#'
-#' La Figura 2.5.3 dispone 27 pares (c,p) en tres bloques verticales de
-#' nueve filas. Si se usa otra cantidad de valores, la funcion mantiene
-#' tres bloques y completa las posiciones faltantes con espacios.
-#'
 #' @param tabla data.frame devuelto por prob_kn() o prob_kn_table()
 #'
 #' @return vector character, una linea por fila de salida
@@ -171,9 +151,6 @@ format_probkn_table <- function(tabla) {
   lines
 }
 
-
-#' Imprime la tabla en consola como en la Figura 2.5.3
-#'
 #' @param tabla data.frame devuelto por prob_kn_table()
 #' @param alpha nivel de significacion
 #' @param n     tamaño de muestra
@@ -191,9 +168,6 @@ print_probkn_screen <- function(tabla, alpha, n) {
   invisible(out)
 }
 
-
-#' Imprime y, opcionalmente, guarda la salida con formato SEQ02.OUT
-#'
 #' @param tabla data.frame devuelto por prob_kn_table()
 #' @param alpha nivel de significacion
 #' @param n     tamaño de muestra
@@ -219,7 +193,6 @@ print_probkn_output <- function(tabla, alpha, n, file = "") {
   invisible(out)
 }
 
-
 #' Pide alpha y n por consola, como el programa original
 get_probkn_params <- function() {
   repeat {
@@ -233,13 +206,6 @@ get_probkn_params <- function() {
   list(alpha = alpha, n = n)
 }
 
-
-#' Version interactiva completa de ProbKn
-#'
-#' Reproduce el flujo de la Figura 2.5.3 y utiliza por defecto los mismos
-#' valores de c del libro. La salida para archivo se agrega a SEQ02.OUT,
-#' siguiendo el comportamiento usado en power.R.
-#'
 #' @param out_file ruta del archivo de salida; use "" para no guardar
 #' @param c_values valores de c a evaluar
 #'
@@ -277,18 +243,3 @@ run_probkn_interactive <- function(
 
   invisible(tabla)
 }
-
-
-# ----------------------------------------------------------------------------
-# EJEMPLO DE VALIDACION DEL LIBRO
-# ----------------------------------------------------------------------------
-# Para reproducir la Figura 2.5.3 sin usar la interfaz interactiva:
-#
-# ejemplo_libro <- prob_kn_table(alpha = 0.05, n = 20)
-# print_probkn_output(ejemplo_libro, alpha = 0.05, n = 20)
-#
-# Resultados destacados:
-#   P(Kn > 0.80*sigma) = 0.791
-#   P(Kn > 1.00*sigma) = 0.300
-#   P(Kn > 1.16*sigma) = 0.063
-# ----------------------------------------------------------------------------
