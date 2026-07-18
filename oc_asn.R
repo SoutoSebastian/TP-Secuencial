@@ -1,10 +1,6 @@
 # ============================================================================
 # PROGRAMA: OC  (subprograma dentro de seq03.exe)
 # ----------------------------------------------------------------------------
-# Basado en "Sequential Methods and Their Applications" de Nitis
-# Mukhopadhyay y Basil M. de Silva, Capitulo 3, Secciones 3.3 y 3.4,
-# formulas (3.3.3) y (3.3.4), y Figuras 3.4.3 y 3.4.6.
-#
 # OBJETIVO
 #   Calcular las aproximaciones de Wald para:
 #
@@ -55,22 +51,6 @@
 #   Estas formulas ignoran el exceso del log-cociente de verosimilitud por
 #   encima o por debajo de los limites en el momento de parada, tal como lo
 #   hace la aproximacion desarrollada en el libro.
-#
-# VALIDACION CON LOS EJEMPLOS DEL LIBRO
-#   Ejemplo Normal, Figura 3.4.3:
-#     theta0 = 0, theta1 = 1, variance = 4,
-#     alpha = 0.05, beta = 0.01.
-#
-#     t0 = -1.0 -> theta = 1.00, OC = 0.010, ASN = 23.3
-#     t0 =  0.0 -> theta = 0.50, OC = 0.396, ASN = 54.4
-#     t0 =  1.0 -> theta = 0.00, OC = 0.950, ASN = 33.4
-#
-#   Ejemplo Bernoulli, Figura 3.4.6:
-#     theta0 = 0.5, theta1 = 0.7, alpha = beta = 0.05.
-#
-#     t0 = -1.0 -> theta = 0.70, OC = 0.050, ASN = 32.2
-#     t0 =  0.0 -> theta = 0.60, OC = 0.500, ASN = 50.4
-#     t0 =  1.0 -> theta = 0.50, OC = 0.950, ASN = 30.4
 # ============================================================================
 
 
@@ -148,6 +128,8 @@ oc_wald_boundaries <- function(alpha, beta) {
 #' @param beta  probabilidad nominal de error de Tipo II
 #'
 #' @return vector con L(theta) = P_theta(aceptar H0)
+
+#Definimos OC para cada caso
 oc_probability <- function(t0, alpha, beta) {
   lim <- oc_wald_boundaries(alpha, beta)
   a <- lim$a
@@ -155,10 +137,12 @@ oc_probability <- function(t0, alpha, beta) {
 
   t0 <- as.numeric(t0)
   out <- numeric(length(t0))
+  #caso t = 0
   zero <- abs(t0) < 1e-10
 
   out[zero] <- a / (a - b)
-
+  
+  #caso t!=0
   if (any(!zero)) {
     t <- t0[!zero]
     out[!zero] <- expm1(t * a) / (exp(t * a) - exp(t * b))
@@ -176,6 +160,8 @@ oc_probability <- function(t0, alpha, beta) {
 #' @param alpha,beta errores nominales del SPRT
 #'
 #' @return vector con la aproximacion del numero muestral promedio
+
+#Definimos ASN para cada caso
 asn_from_moments <- function(L, mean_z, second_z, alpha, beta) {
   lim <- oc_wald_boundaries(alpha, beta)
   a <- lim$a
@@ -184,7 +170,8 @@ asn_from_moments <- function(L, mean_z, second_z, alpha, beta) {
   L <- as.numeric(L)
   mean_z <- as.numeric(mean_z)
   second_z <- as.numeric(second_z)
-
+  
+  #validacion de los datos
   if (!(length(L) == length(mean_z) && length(L) == length(second_z))) {
     stop("L, mean_z y second_z deben tener la misma longitud")
   }
@@ -194,9 +181,11 @@ asn_from_moments <- function(L, mean_z, second_z, alpha, beta) {
 
   out <- numeric(length(L))
   zero_mean <- abs(mean_z) < 1e-9
-
+  
+  #caso E_theta(Z_1)=0
   out[zero_mean] <- -a * b / second_z[zero_mean]
-
+  
+  #caso E_theta(Z_1)!=0
   if (any(!zero_mean)) {
     out[!zero_mean] <-
       (b * L[!zero_mean] + a * (1 - L[!zero_mean])) /
@@ -211,10 +200,7 @@ asn_from_moments <- function(L, mean_z, second_z, alpha, beta) {
 # 3) RELACION ENTRE t0 Y theta, Y MOMENTOS DE Z1 PARA CADA DISTRIBUCION
 # ----------------------------------------------------------------------------
 
-# Cada funcion theta_* obtiene el valor verdadero de theta correspondiente
-# a un valor dado de t0 mediante la ecuacion E_theta(exp(t0*Z1)) = 1.
-# Cada funcion moments_* devuelve E_theta(Z1), Var_theta(Z1) y
-# E_theta(Z1^2).
+#Definiciones para cada distribución
 
 
 # 1. Normal(mean = theta, varianza conocida = sigma2)
@@ -293,8 +279,6 @@ moments_weibull <- function(theta, theta0, theta1, shape) {
 
 
 # 4. Erlang(exp.mean = theta, k conocido, entero)
-#    Bajo la parametrizacion usada en sprt.R, Erlang es Gamma(shape=k,
-#    scale=theta). Por lo tanto utiliza las mismas formulas que Gamma.
 theta_erlang_from_t <- function(t0, theta0, theta1, k) {
   theta_gamma_from_t(t0, theta0, theta1, shape = k)
 }
@@ -543,7 +527,6 @@ compute_oc_asn <- function(
     stop("t0_values debe contener uno o mas valores finitos")
   }
 
-  # round evita residuos como 1.0000000000000004 generados por seq().
   t0_values <- round(as.numeric(t0_values), 10)
   dist <- OC_DIST_TABLE[[dist_id]]
 
@@ -587,12 +570,10 @@ compute_oc_asn <- function(
 
 
 # ----------------------------------------------------------------------------
-# 6) FORMATO DE SALIDA SIMILAR A LAS FIGURAS 3.4.3 Y 3.4.6
+# 6) FORMATO DE SALIDA
 # ----------------------------------------------------------------------------
 
-#' Da formato decimal como en la salida del libro
-#'
-#' Ejemplos: 0.50 -> ".50"; -0.9 -> "-.9"; 1.00 -> "1.00".
+
 format_oc_decimal <- function(x, digits) {
   texto <- sprintf(paste0("%.", digits, "f"), x)
   texto <- sub("^0\\.", ".", texto)
@@ -612,9 +593,6 @@ format_oc_row <- function(row) {
   )
 }
 
-
-#' Arma la tabla en dos bloques verticales, como en la salida del libro
-#'
 #' Para la grilla por defecto, el bloque izquierdo contiene t0=-2.2,...,0
 #' y el derecho t0=0.1,...,2.2.
 format_oc_asn_table <- function(tabla) {
@@ -773,7 +751,7 @@ plot_oc_asn <- function(tabla) {
 
 
 # ----------------------------------------------------------------------------
-# 8) INTERFAZ DE CONSOLA, COMO EL SUBPROGRAMA OC DE Seq03.exe
+# 8) INTERFAZ DE CONSOLA
 # ----------------------------------------------------------------------------
 
 print_oc_dist_menu <- function() {
@@ -917,7 +895,7 @@ run_oc_interactive <- function(
 #
 # print_oc_output(
 #   normal_libro,
-#   dist_id = "1",
+#  dist_id = "1",
 #   theta0 = 0,
 #   theta1 = 1,
 #   known = 4,
