@@ -15,16 +15,16 @@
 # FUNDAMENTO TEORICO
 #   Sea Zn = sum_{i=1}^n log( f1(xi) / f0(xi) ) el log-cociente de
 #   verosimilitud acumulado. Los limites de Wald son:
-#       a = log( beta / (1-alpha) )      (limite inferior)
-#       b = log( (1-beta) / alpha )      (limite superior)
+#       b = log( beta / (1-alpha) )      (limite inferior)
+#       a = log( (1-beta) / alpha )      (limite superior)
 #   Regla de decision:
-#       Zn <= a  ->  se ACEPTA H0
-#       Zn >= b  ->  se RECHAZA H0 (se acepta H1)
+#       Zn <= b  ->  se ACEPTA H0
+#       Zn >= a  ->  se RECHAZA H0 (se acepta H1)
 #       en otro caso, se sigue observando
 #
 #   Version TRUNCADA (3.2.7): si se llega a n=K sin cruzar ningun limite,
-#   se decide segun el signo de Zk: se acepta H1 si Zk >= 0, se acepta H0
-#   si Zk < 0 (regla clasica de Wald para SPRT truncado). 
+#   se decide según la cercanía a las fronteras. Si Zn está mas cerca de b se acepta H0
+#   y si está mas cerca de a se rechaza H0.
 # ============================================================================
 
 
@@ -478,4 +478,6 @@ parse_numeric_list <- function(texto) {
 }
 
 
+#' Instructivo de Ejecución:
+#' Cargar source, correr run_sprt_interactive(), luego seguir las instrucciones dadas.
 
