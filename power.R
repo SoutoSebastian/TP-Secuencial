@@ -118,8 +118,7 @@ sample_size <- function(mu0, mu1, sigma, alpha, beta) {
 }
 
 
-#' Imprime el resultado con un formato similar al de SEQ02.OUT
-#'
+#' Imprime el resultado 
 #' @param res   lista devuelta por power_MP()
 #' @param file  ruta de archivo de salida ("" imprime solo en consola)
 print_power_output <- function(res, file = "") {
@@ -139,7 +138,7 @@ print_power_output <- function(res, file = "") {
 }
 
 
-#' Imprime el resultado de sample_size() con formato similar al de SEQ02.OUT
+#' Imprime el resultado de sample_size() 
 #'
 #' @param res   lista devuelta por sample_size()
 #' @param file  ruta de archivo de salida ("" imprime solo en consola)
@@ -214,7 +213,7 @@ compute_beta_or_n <- function(params, value, file = "") {
 }
 
 
-#' Parsea una lista de numeros separados por espacios y/o comas
+#' Parsea una lista de numeros separados por espacios y/o comas. Es para cuando se hacen varios cálculos
 parse_numeric_list <- function(texto) {
   partes <- strsplit(texto, "[, ]+")[[1]]
   partes <- partes[nzchar(partes)]
@@ -251,5 +250,10 @@ run_power_interactive <- function(out_file = "SEQ02.OUT") {
 
   invisible(NULL)
 }
+
+
+#' Instructivo de Ejecución:
+#' Cargar source, correr run_power_interactive(), luego seguir las instrucciones dadas.
+
 
 
