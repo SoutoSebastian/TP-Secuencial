@@ -35,10 +35,14 @@
 #         = P[ Chi-cuadrado(n-1)
 #              > n*(n-1)*c^2 / (4*a_(n-1)^2) ].
 #
-#   Por lo tanto, esta probabilidad depende de alpha, n y c, pero NO del
-#   valor de sigma.
+#   VALIDACION CON EL EJEMPLO DEL LIBRO
+#   alpha:0.05, sample size n=20
 # ============================================================================
 
+
+# ----------------------------------------------------------------------------
+# 1) PANTALLA DE BIENVENIDA DEL PROGRAMA
+# ----------------------------------------------------------------------------
 
 #' Imprime la pantalla de bienvenida del programa (imita la del original)
 print_banner <- function() {
@@ -54,6 +58,10 @@ print_banner <- function() {
   cat(paste(banner, collapse = "\n"), "\n")
 }
 
+
+# ----------------------------------------------------------------------------
+# 2) NUCLEO ESTADISTICO: CALCULO DE P(Kn > c*sigma)
+# ----------------------------------------------------------------------------
 
 #' Calcula P(Kn > c*sigma)
 #'
@@ -95,6 +103,10 @@ prob_kn <- function(alpha, n, c) {
 }
 
 
+# ----------------------------------------------------------------------------
+# 3) GENERACION DE LA TABLA DE PROBABILIDADES
+# ----------------------------------------------------------------------------
+
 #' Genera la tabla de ProbKn para un conjunto de valores de c
 #' @param alpha    nivel de significacion
 #' @param n        tamaño de muestra
@@ -106,6 +118,10 @@ prob_kn_table <- function(alpha, n, c_values = seq(0.44, 1.48, by = 0.04)) {
   prob_kn(alpha = alpha, n = n, c = c_values)
 }
 
+
+# ----------------------------------------------------------------------------
+# 4) FORMATO DE LOS VALORES Y DE LA TABLA
+# ----------------------------------------------------------------------------
 
 format_book_decimal <- function(x, digits) {
   texto <- sprintf(paste0("%.", digits, "f"), x)
@@ -151,6 +167,10 @@ format_probkn_table <- function(tabla) {
   lines
 }
 
+# ----------------------------------------------------------------------------
+# 5) IMPRESION DE LOS RESULTADOS EN CONSOLA Y ARCHIVO
+# ----------------------------------------------------------------------------
+
 #' @param tabla data.frame devuelto por prob_kn_table()
 #' @param alpha nivel de significacion
 #' @param n     tamaño de muestra
@@ -193,6 +213,10 @@ print_probkn_output <- function(tabla, alpha, n, file = "") {
   invisible(out)
 }
 
+# ----------------------------------------------------------------------------
+# 6) INGRESO DE PARAMETROS POR CONSOLA
+# ----------------------------------------------------------------------------
+
 #' Pide alpha y n por consola, como el programa original
 get_probkn_params <- function() {
   repeat {
@@ -205,6 +229,10 @@ get_probkn_params <- function() {
 
   list(alpha = alpha, n = n)
 }
+
+# ----------------------------------------------------------------------------
+# 7) EJECUCION INTERACTIVA COMPLETA DEL PROGRAMA
+# ----------------------------------------------------------------------------
 
 #' @param out_file ruta del archivo de salida; use "" para no guardar
 #' @param c_values valores de c a evaluar

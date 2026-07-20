@@ -48,9 +48,8 @@
 #       E_theta(N) ~= -a*b / E_theta(Z1^2),
 #                      si E_theta(Z1) = 0.
 #
-#   Estas formulas ignoran el exceso del log-cociente de verosimilitud por
-#   encima o por debajo de los limites en el momento de parada, tal como lo
-#   hace la aproximacion desarrollada en el libro.
+#   VALIDACION CON EL EJEMPLO DEL LIBRO
+#   distribution ID#: 1, theta0:0, thetha1: 1, alpha: 0.01, beta:0.05, varianza:4
 # ============================================================================
 
 
@@ -109,6 +108,8 @@ validate_oc_params <- function(dist_id, theta0, theta1, known, alpha, beta) {
 #' Calcula los limites logaritmicos de Wald usando la notacion del libro
 #'
 #' @return lista con a (limite superior) y b (limite inferior)
+
+#Definimoos a y b, los limites de Wald
 oc_wald_boundaries <- function(alpha, beta) {
   list(
     a = log((1 - beta) / alpha),
@@ -200,7 +201,7 @@ asn_from_moments <- function(L, mean_z, second_z, alpha, beta) {
 # 3) RELACION ENTRE t0 Y theta, Y MOMENTOS DE Z1 PARA CADA DISTRIBUCION
 # ----------------------------------------------------------------------------
 
-#Definiciones para cada distribución
+#Definiciones para cada distribuciónrun
 
 
 # 1. Normal(mean = theta, varianza conocida = sigma2)
